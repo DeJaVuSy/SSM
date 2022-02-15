@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjp.generatemysql.mapper.GenTableMapper">
+
+<!--    <resultMap type="com.zjp.generatemysql.entity.GenTable" id="GenTableResult">-->
+<!--        <id property="tableId" column="table_id"/>-->
+<!--        <result property="tableName" column="table_name"/>-->
+<!--        <result property="tableComment" column="table_comment"/>-->
+<!--        <result property="className" column="class_name"/>-->
+<!--        <result property="createTime" column="create_time"/>-->
+<!--        <result property="updateTime" column="update_time"/>-->
+<!--    </resultMap>-->
+<!--    查询未生成的表-->
+    <select id="selectDbTableList" resultType="com.zjp.generatemysql.entity.GenTable" >
+        select table_name, table_comment, create_time, update_time from information_schema.tables
+        where table_schema = (select database())
+        AND table_name NOT LIKE 'gen_%'
+        AND table_name NOT IN (select table_name from gen_table)
+        <if test="tableName != null and tableName != ''">
+            and table_name like lower(concat('%', #{tableName}, '%'))
+        </if>
+        <if test="tableComment != null and tableComment != ''">
+            and table_comment like lower(concat('%', #{tableComment}, '%'))
+        </if>
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            and create_time &gt;= #{startTime} and create_time &lt;= #{endTime}
+        </if>
+        limit #{currentPage},#{pageSize}
+    </select>
+
+<!--    查询表数量-->
+    <select id="selectDbTableCount" resultType="int">
+        select count(*) from information_schema.tables
+        where table_schema = (select database())
+        AND table_name NOT LIKE 'gen_%'
+        AND table_name NOT IN (select table_name from gen_table)
+        <if test="tableName != null and tableName != ''">
+            and table_name like lower(concat('%', #{tableName}, '%'))
+        </if>
+        <if test="tableComment != null and tableComment != ''">
+            and table_comment like lower(concat('%', #{tableComment}, '%'))
+        </if>
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            and create_time &gt;= #{startTime} and create_time &lt;= #{endTime}
+        </if>
+    </select>
+
+<!--   批量新增表 -->
+    <insert id="addGenTableBatch">
+        insert into gen_table values
+        <foreach collection="genTableList" item="genTable" separator=",">
+            (default,#{genTable.tableName},#{genTable.tableComment},#{genTable.className},null,null,null,null,null,#{genTable.createTime},#{genTable.updateTime},null,null,null,null)
+        </foreach>
+
+    </insert>
+
+<!--    <select id="studentById">-->
+<!--        select * from student where name = '#{student.name}'-->
+<!--    </select>-->
+
+</mapper>
