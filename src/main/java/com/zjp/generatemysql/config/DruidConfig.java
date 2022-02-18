@@ -3,6 +3,7 @@ package com.zjp.generatemysql.config;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.zjp.generatemysql.util.UserLoginToken;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -27,6 +28,7 @@ public class DruidConfig {
     //配置Druid的监控
     //1、配置一个管理后台的Servlet
     //url http://localhost:8081/druid
+    @UserLoginToken //拦截请求，认证是否登录
     @Bean
     public ServletRegistrationBean statViewServlet(){
         ServletRegistrationBean bean = new ServletRegistrationBean(new StatViewServlet(), "/druid/*");

@@ -1,5 +1,6 @@
 package com.zjp.generatemysql.config;
 
+import com.zjp.generatemysql.util.UserLoginToken;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -15,6 +16,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class Swagger2Conf {
 
     //http://localhost:8081/swagger-ui.html
+    @UserLoginToken //拦截请求，认证是否登录
     @Bean
     public Docket getUserDocket(){
         ApiInfo apiInfo=new ApiInfoBuilder()

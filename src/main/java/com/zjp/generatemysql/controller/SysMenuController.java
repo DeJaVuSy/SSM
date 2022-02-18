@@ -32,13 +32,12 @@ public class SysMenuController {
     @Autowired
     private ISysMenuService sysMenuService;
 
-    //@UserLoginToken //拦截请求，认证是否登录
+    @UserLoginToken //拦截请求，认证是否登录
     @ApiOperation("菜单查询")
     @PostMapping( value = "/queryMenu",produces = "application/json")
     public List<SysMenu> queryMenu(){
 //        String toke = httpServletRequest.getHeader("token");
 //        String username = JwtUtil.getUserNameByToken(toke);
-
         return sysMenuService.queryMenu();
 
     }
