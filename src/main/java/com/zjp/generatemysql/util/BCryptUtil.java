@@ -11,7 +11,7 @@ public class BCryptUtil {
     public static void main(String[] args) {
         String uuid= UUID.randomUUID().toString().replaceAll("-", "");
         System.out.println("uuid===="+uuid);
-        String pwd1 = md5("admin@abc", "admin"+uuid);
+        String pwd1 = md5("adminabc", "admin"+"7658a51a9c8f4cdfa3a9470f370ebe63");
         System.out.println("pwd1:"+pwd1);
 
 //        String uuid1= UUID.randomUUID().toString().replaceAll("-", "");
