@@ -15,6 +15,8 @@ public class JwtUtil {
 
     // Token过期时间30分钟
     public static final long EXPIRE_TIME = 30 * 60 * 1000;
+    // 用户名称
+    public static final String USER_NAME = "username";
 
     /* *
      * @Author lsc
@@ -28,7 +30,7 @@ public class JwtUtil {
         try {
             // 设置加密算法
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            JWTVerifier verifier = JWT.require(algorithm).withClaim("username", username).build();
+            JWTVerifier verifier = JWT.require(algorithm).withClaim(USER_NAME, username).build();
             // 效验TOKEN
             DecodedJWT jwt = verifier.verify(token);
             return true;
@@ -36,7 +38,6 @@ public class JwtUtil {
             return false;
         }
     }
-
 
 
     /* *
@@ -49,7 +50,7 @@ public class JwtUtil {
         Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
         Algorithm algorithm = Algorithm.HMAC256(secret);
         // 附带username信息
-        return JWT.create().withClaim("username", username).withExpiresAt(date).sign(algorithm);
+        return JWT.create().withClaim(USER_NAME, username).withExpiresAt(date).sign(algorithm);
     }
 
     /* *
@@ -60,23 +61,29 @@ public class JwtUtil {
      */
     public static String getUserNameByToken(String token) {
         DecodedJWT jwt = JWT.decode(token);
-        return jwt.getClaim("username").asString();
+        return jwt.getClaim(USER_NAME).asString();
     }
 
     // 是否已过期
-    public static boolean isExpiration(String token,String Signing) {
+    public static boolean isExpiration(String token, String Signing) {
         try {
-            return getTokenBody(token,Signing).getExpiration().before(new Date());
-        }catch (ExpiredJwtException e){
-            return  e.getClaims().getExpiration().before(new Date());
+            return getTokenBody(token, Signing).getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getExpiration().before(new Date());
         }
     }
 
-    private static Claims getTokenBody(String token,String Signing) {
-        return Jwts.parser()
-                .setSigningKey(Signing)
-                .parseClaimsJws(token)
-                .getBody();
+    private static Claims getTokenBody(String token, String Signing) {
+        Claims claims = null;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(Signing)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            System.out.println("JWT格式验证失败:" + token);
+        }
+        return claims;
     }
 
 
@@ -86,15 +93,51 @@ public class JwtUtil {
      * @param token
      * @return
      */
-    public static boolean isTwoTimesTokenExpiration(String token,String Signing) {
+    public static boolean isTwoTimesTokenExpiration(String token, String Signing) {
         try {
-            Claims tokenBody = getTokenBody(token,Signing);
+            Claims tokenBody = getTokenBody(token, Signing);
             Date expiration = tokenBody.getExpiration();
-            return expiration.getTime() + EXPIRE_TIME * 2   < System.currentTimeMillis();
-        }catch (ExpiredJwtException e){
-            long expirationTime = e.getClaims().getExpiration().getTime() + EXPIRE_TIME * 1000 * 2  ;
+            return expiration.getTime() + EXPIRE_TIME * 2 < System.currentTimeMillis();
+        } catch (ExpiredJwtException e) {
+            long expirationTime = e.getClaims().getExpiration().getTime() + EXPIRE_TIME * 1000 * 2;
             return expirationTime < System.currentTimeMillis();
         }
+    }
+
+
+    /**
+     * 从token中获取JWT中的负载
+     */
+    private static Claims getClaimsFromToken(String token, String Signing) {
+        Claims claims = null;
+        try {
+            claims = Jwts.parser()
+                    .setSigningKey(Signing)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            System.out.println("JWT格式验证失败:" + token);
+        }
+        return claims;
+    }
+
+
+    /**
+     * 从token中获取过期时间
+     */
+    private static Date getExpiredDateFromToken(String token, String Signing) {
+        Claims claims = getClaimsFromToken(token, Signing);
+        return claims.getExpiration();
+    }
+
+    public static void main(String[] args) {
+//        Date date = getExpiredDateFromToken(
+//                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDU0Mjg0NjYsInVzZXJuYW1lIjoicm9vdCJ9.CLH1dB7gZ_3vQzootAz_r_eTZTBwE8C-dY4l-3v76Ro",
+//                "9c102f25233787c60a07e5a6cba789a3");
+        boolean b = isTwoTimesTokenExpiration(
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDU0Mjg0NjYsInVzZXJuYW1lIjoicm9vdCJ9.CLH1dB7gZ_3vQzootAz_r_eTZTBwE8C-dY4l-3v76Ro",
+                "9c102f25233787c60a07e5a6cba789a3");
+        System.out.println(b);
     }
 
 }
