@@ -23,7 +23,7 @@ import java.util.List;
  * @author jobob
  * @since 2021-12-07
  */
-@Api(value = "代码生成接口")
+@Api(tags = "代码生成接口")
 @CrossOrigin //解决跨越问题
 @RestController
 @RequestMapping("/generatemysql/gen-table")

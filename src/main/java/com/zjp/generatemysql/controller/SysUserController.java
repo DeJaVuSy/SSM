@@ -22,7 +22,7 @@ import java.util.Map;
  * @author jobob
  * @since 2022-01-05
  */
-@Api(value = "用户")
+@Api(tags = "用户信息表")
 @CrossOrigin //解决跨越问题
 @RestController
 @RequestMapping("/generatemysql/sys-user")

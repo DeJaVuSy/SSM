@@ -5,6 +5,7 @@ import com.zjp.generatemysql.entity.SysMenu;
 import com.zjp.generatemysql.service.ISysMenuService;
 import com.zjp.generatemysql.util.JwtUtil;
 import com.zjp.generatemysql.util.UserLoginToken;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +25,7 @@ import java.util.List;
  * @author jobob
  * @since 2022-02-11
  */
+@Api(tags = "菜单权限表")
 @RestController
 @CrossOrigin //解决跨越问题
 @RequestMapping("/generatemysql/sys-menu")

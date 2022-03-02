@@ -1,5 +1,6 @@
 package com.zjp.generatemysql.controller;
 
+import com.zjp.generatemysql.entity.SysUser;
 import com.zjp.generatemysql.entity.domain.Server;
 import com.zjp.generatemysql.util.UserLoginToken;
 import io.swagger.annotations.Api;
@@ -9,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * <p>
  * 服务器监控
@@ -17,13 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @author jobob
  * @since 2022-01-18
  */
-@Api(value = "服务器监控")
+@Api(tags = "服务器监控")
 @CrossOrigin //解决跨越问题
 @RestController
 @RequestMapping("/generatemysql")
 public class ServerMController {
 
 
+    @UserLoginToken
     @ApiOperation("服务器监控")
     @PostMapping(value = "ServerM",produces = "application/json")
     public Server ServerM(){
@@ -36,4 +41,6 @@ public class ServerMController {
         }
         return server;
     }
+
+
 }
