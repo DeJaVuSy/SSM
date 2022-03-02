@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.zjp.generatemysql.common.exception.ExceptionUtils;
 import com.zjp.generatemysql.service.ISysUserService;
 import com.zjp.generatemysql.util.JwtUtil;
 import com.zjp.generatemysql.util.PassToken;
@@ -140,7 +141,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     System.out.println("无token，请重新登录");
                     //throw new RuntimeException("无token，请重新登录");
                     httpServletResponse.setStatus(401);
-                    return false;
+//                    return false;
+                    //throw new ExceptionUtils("无token,请重新登录",401);
                 }
                 // 获取 token 中的 user name
                 String userName = JwtUtil.getUserNameByToken(token);
@@ -168,9 +170,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 //                }
                 if (userPwd == null) {
                     System.out.println("用户不存在，请重新登录");
+                    //throw new ExceptionUtils("用户不存在，请重新登录",401);
                     httpServletResponse.setStatus(401);
-                    //throw new RuntimeException("用户不存在，请重新登录");
-                    return false;
+//                    //throw new RuntimeException("用户不存在，请重新登录");
+//                    return false;
                 }
                 // 验证 token
                 boolean result = JwtUtil.verify(token,userName,userPwd);
